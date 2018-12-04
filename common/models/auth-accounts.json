@@ -1,0 +1,49 @@
+{
+  "name": "authAccounts",
+  "plural": "authAccounts",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "id": {
+      "type": "string",
+      "id": true,
+      "defaultFn": "uuidv4"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "password": {
+      "type": "string"
+    },
+    "otp": {
+      "type": "string"
+    },
+    "isVerified": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "isDeleted": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "createdAt": {
+      "type": "date",
+      "required": true
+    },
+    "updatedAt": {
+      "type": "date"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
