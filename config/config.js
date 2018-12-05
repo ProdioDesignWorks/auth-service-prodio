@@ -1,6 +1,6 @@
-const authType = "OTP"; //EMAIL or OTP based login
-const otpDigits = 4; //number of digits for otp
-const encryptionKey = "authSecretKey"; //secret key for data encryption
+const authType = ""; //EMAIL or OTP based login
+const otpDigits = 0; //number of digits for otp
+const encryptionKey = ""; //secret key for data encryption
 const securedPassword = true; //secured password validations
 
 exports.authType = authType;
