@@ -1,0 +1,12 @@
+{
+  "authDb": {
+    "host": "localhost",
+    "port": 27017,
+    "url": "",
+    "database": "authDb",
+    "password": "",
+    "name": "authDb",
+    "user": "",
+    "connector": "mongodb"
+  }
+}
