@@ -27,10 +27,10 @@
 `auth-service-prodio` uses loopback as the core framework for developing API's, so all customisations, configurations, middlewares and db connectors can be used which you would have used in loopback.
 
 # Configuration
-    Open `config.js` file in the `config` folder. Auth service provides 4 configuration option as below: 
+Open `config.js` file in the `config` folder. Auth service provides 4 configuration option as below: 
 
-    1. authType(String) - can be one of `EMAIL` for email, password based auth or `OTP` for mobile otp based auth.
-    2. otpDigits(Integer) - Mandatory for OTP based auth. Number of digits of otp to be generated if OTP based auth.
-    3. encryptionKey(String) - Mandatory for EMAIL based auth. Secured key using which the password and verification tokens are to be encrypted.
-    4. securedPassword(Boolean) - Mandatory for EMAIL based auth. If set to true all passwords will be checked to have minimum 8 characters, combination of uppercase, lowercase, number and special characters.
+1. authType(String) - can be one of `EMAIL` for email, password based auth or `OTP` for mobile otp based auth.
+2. otpDigits(Integer) - Mandatory for OTP based auth. Number of digits of otp to be generated if OTP based auth.
+3. encryptionKey(String) - Mandatory for EMAIL based auth. Secured key using which the password and verification tokens are to be encrypted.
+4. securedPassword(Boolean) - Mandatory for EMAIL based auth. If set to true all passwords will be checked to have minimum 8 characters, combination of uppercase, lowercase, number and special characters.
 
