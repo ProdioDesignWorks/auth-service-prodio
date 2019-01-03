@@ -400,8 +400,7 @@ module.exports = function (Authaccounts) {
                     const findEmail = {
                         where: {
                             and: [
-                                { email: email },
-                                { isDeleted: false }
+                                { email: email }
                             ]
                         }
                     }
@@ -411,14 +410,10 @@ module.exports = function (Authaccounts) {
                         } else if (isNullValue(accountData)) {
                             return cb(new HttpErrors.BadRequest("Email address is not registered.", { expose: false }));
                         } else {
-                            if (accountData.isVerified) {
-                                return cb(new HttpErrors.Conflict("Email address is already verified.", { expose: false }));
-                            } else {
-                                let returnObj = {};
-                                const verificationToken = generateVerificationToken(accountData, encryptionKey);
-                                returnObj.verificationToken = verificationToken;
-                                return cb(null, returnObj);
-                            }
+                            let returnObj = {};
+                            const verificationToken = generateVerificationToken(accountData, encryptionKey);
+                            returnObj.verificationToken = verificationToken;
+                            return cb(null, returnObj);
                         }
                     });
                 }
