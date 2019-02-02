@@ -7,11 +7,13 @@ const {
     authType, otpDigits, encryptionKey, securedPassword
 } = require('../../config/config');
 const {
-    emailAuthType, otpAuthType, saltRounds
+    emailAuthType, otpAuthType, saltRounds, SELF_SIGNUP, GOOGLE_SIGNUP
 } = require('../../utility/constants');
 const {
     isNullValue, isValidEmail, isValidPhoneNumber, isPasswordSecured, getFormattedEmail, generateVerificationToken, verifyToken
 } = require('../../utility/helper');
+const { GoogleClient } = require('../../google/google.js');
+
 
 module.exports = function (Authaccounts) {
 
@@ -184,6 +186,56 @@ module.exports = function (Authaccounts) {
         }
     );
 
+    Authaccounts.remoteMethod(
+        'googleSignInUrl', {
+            http: {
+                path: '/googleSignInUrl',
+                verb: 'get'
+            },
+            description: ["Generates Url for google signin"],
+            accepts: [],
+            returns: {
+                type: 'string',
+                root: true
+            }
+        }
+    );
+
+    Authaccounts.remoteMethod(
+        'googleSignIn', {
+            http: {
+                path: '/googleSignIn',
+                verb: 'get'
+            },
+            description: ["Google Signin."],
+            accepts: [{
+                arg: 'code',
+                type: 'string',
+                required: true,
+                http: {
+                    source: 'query'
+                }
+            },{
+                arg: 'scope',
+                type: 'string',
+                required: true,
+                http: {
+                    source: 'query'
+                }
+            },{
+                arg: 'res', 
+                type: 'object', 
+                http: ctx => { 
+                    return ctx.res; 
+                }
+            }],
+            returns: {
+                type: 'object',
+                root: true
+            }
+        }
+    );
+
     Authaccounts.registerAccount = (account, cb) => {
         if (authType === emailAuthType) {
             if (!isNullValue(encryptionKey)) {
@@ -215,6 +267,7 @@ module.exports = function (Authaccounts) {
                             const accountJson = {
                                 email: email,
                                 password: bcrypt.hashSync(password, bcrypt.genSaltSync(saltRounds)),
+                                userType: SELF_SIGNUP,
                                 createdAt: new Date()
                             }
                             Authaccounts.create(accountJson, (createErr, accountDetails) => {
@@ -801,4 +854,74 @@ module.exports = function (Authaccounts) {
         }
     }
 
+    Authaccounts.googleSignInUrl = (cb) => {
+        return cb(null, GoogleClient.googleAuthUrl());
+    };
+
+    Authaccounts.googleSignIn = (code, scope, res, cb) => {
+        GoogleClient.verifyToken(code).then(profile => {
+            const { email, email_verified, id, name, picture, } = profile;
+
+            const findQuery = {
+                where: {
+                    email
+                }
+            };
+
+            Authaccounts.findOne(findQuery).then(user => {
+                if(!user){
+                    //Register User
+                    const userProps = {
+                        email,
+                        name,
+                        userType: GOOGLE_SIGNUP,
+                        isVerified: email_verified,
+                        googleId: id,
+                        picture,
+                    };
+
+                    Authaccounts.create(userProps).then(googleUser => {
+                        return cb(null, googleUser);
+                    }).catch(error => {
+                        console.error(error);
+                        return cb(new HttpErrors.InternalServerError("Database connection error. Please try again", { expose: false }));
+                    });
+                }else{
+                    //Already exists
+                    const updateProps = {
+                        userType: GOOGLE_SIGNUP,
+                        googleId: id,
+                        name,
+                        picture,
+                        isVerified: authType === emailAuthType ? email_verified : user.isVerified,
+                    };
+
+                    user.updateAttributes(updateProps).then(googleUser => {
+                        return cb(null, googleUser);
+                    }).catch(error => {
+                        console.error(error);
+                        return cb(new HttpErrors.InternalServerError("Database connection error. Please try again", { expose: false }));
+                    });
+                }
+            }).catch(error => {
+                console.error(error);
+                return cb(new HttpErrors.InternalServerError("Database connection error. Please try again", { expose: false }));
+            });
+        }).catch(ex => {
+            console.error(ex);
+            return cb(new HttpErrors.InternalServerError("Network error. Please try again", { expose: false }));
+        });
+    };
+
 };
+
+
+
+
+// {
+//     "name": "Avinash Techingen",
+//     "picture": "https://scontent.xx.fbcdn.net/v/t1.0-1/c56.0.158.158/s50x50/199628_104727529612213_251091_n.jpg?oh=e073c02779ca194f6319122934514b39&oe=594A7E7D",
+//     "googleId": "1251205408297747",
+//     "accessToken":"EAAR0mxMEgQkBAB2K9e9B0Sd7n7xl5oJQ7DAffUik3ZAC09zigRKEwBfHrWl6t05BhZCnTPQKkH6ZAeux9MYyOUAuteCcTccczDsR71HI1OWu1P2gQ1sAvqFb2hEAZA6l723DtaXD37Qs6wxMEB3AtxHZCUX0ID5ZAyshnDShZCWjQSkWlu4b6WZCHm8G9Vtj1ggZD",
+//     "email":"avinash@gmail.com"
+// }

@@ -12,6 +12,14 @@
       "id": true,
       "defaultFn": "uuidv4"
     },
+    "name": {
+      "type": "string",
+      "default": ""
+    },
+    "picture": {
+      "type": "string",
+      "default": ""
+    },
     "email": {
       "type": "string"
     },
@@ -20,6 +28,14 @@
     },
     "password": {
       "type": "string"
+    },
+    "userType": {
+      "type": "string",
+      "default": ""
+    },
+    "googleId": {
+      "type": "string",
+      "default": ""
     },
     "otp": {
       "type": "string"
@@ -36,7 +52,7 @@
     },
     "createdAt": {
       "type": "date",
-      "required": true
+      "defaultFn": "now"
     },
     "updatedAt": {
       "type": "date"
