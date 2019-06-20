@@ -26,18 +26,19 @@ function GoogleClient(googleConfig, defaultScope){
 	/**
 	 * Get a url which will open the google sign-in page and request access to the scope provided (such as calendar events).
 	 */
-	this.getConnectionUrl = () => (
+	this.getConnectionUrl = (prop) => (
 		this.OAuth2Client.generateAuthUrl({
 			access_type: 'offline',
 			prompt: 'consent', // access type and approval prompt will force a new refresh token to be made each time signs in
 			scope: this.defaultScope,
+			state: prop.toString(),
 		})
 	);
 
 	/**
 	 * Create the google url to be sent to the client.
 	 */
-	this.googleAuthUrl = () => this.getConnectionUrl();
+	this.googleAuthUrl = (prop) => this.getConnectionUrl(prop);
 
 	this.verifyToken = async (code) => {
 		const data = await this.OAuth2Client.getToken(code);
