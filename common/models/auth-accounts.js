@@ -193,7 +193,14 @@ module.exports = function (Authaccounts) {
                 verb: 'get'
             },
             description: ["Generates Url for google signin"],
-            accepts: [],
+            accepts: [{
+                arg: 'state',
+                type: 'string',
+                required: false,
+                http: {
+                    source: 'query'
+                }
+            }],
             returns: {
                 type: 'string',
                 root: true
@@ -854,8 +861,8 @@ module.exports = function (Authaccounts) {
         }
     }
 
-    Authaccounts.googleSignInUrl = (cb) => {
-        return cb(null, GoogleClient.googleAuthUrl());
+    Authaccounts.googleSignInUrl = (state = '', cb) => {
+        return cb(null, GoogleClient.googleAuthUrl(state));
     };
 
     Authaccounts.googleSignIn = (code, scope, res, cb) => {
