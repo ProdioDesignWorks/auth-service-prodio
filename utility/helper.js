@@ -1,4 +1,10 @@
 var crypto = require('crypto');
+var jwt = require('jsonwebtoken');
+
+const {
+      encryptionKey
+ } = require('../config/config');
+
 const isNullValue = (val) => {
      if (typeof val === 'string') {
           val = val.trim();
@@ -37,6 +43,34 @@ const generateVerificationToken = (json, secretKey) => {
      return crypted;
 }
 
+const getJWTToken = (model) => {
+     console.log('model', model);
+     var token_data = {};
+     token_data.userId = model.id;
+    // token_data.exp =  Math.floor(Date.now() / 1000) + (60 * 60);
+    // console.log('exp===>',token_data.exp);
+     //var token = jwt.sign(token_data, 'shhhhh');
+     console.log('Date',Math.floor(Date.now() / 1000) + (30 * 60 * 1000))
+     console.log('token',encryptionKey);
+     var token = jwt.sign({
+          exp: Math.floor(Date.now()/1000) + (15 * 60),
+          data:  model.id
+        }, encryptionKey);
+     return token;
+ };
+
+ const verifyJwtToken = (token) => {
+      console.log('token',token)
+      var decoded;
+     try {
+           decoded = jwt.verify(token, encryptionKey);
+           decoded = true
+        } catch(err) {
+          decoded = false
+        } 
+        return decoded;
+      
+ }
 const verifyToken = (token, secretKey) => {
      try {
           var decipher = crypto.createDecipher('aes-256-cbc', secretKey);
@@ -61,3 +95,5 @@ exports.isPasswordSecured = val => isPasswordSecured(val);
 exports.getFormattedEmail = val => getFormattedEmail(val);
 exports.generateVerificationToken = (json, secretKey) => generateVerificationToken(json, secretKey);
 exports.verifyToken = (token, secretKey) => verifyToken(token, secretKey);
+exports.getJWTToken = val => getJWTToken(val);
+exports.verifyJwtToken = val => verifyJwtToken(val);
