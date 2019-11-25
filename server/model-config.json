@@ -16,5 +16,13 @@
   "authAccounts": {
     "dataSource": "authDb",
     "public": true
+  },
+  "resetPasswordRequest": {
+    "dataSource": "authDb",
+    "public": true
+  },
+  "authenticateRequest": {
+    "dataSource": "authDb",
+    "public": true
   }
 }

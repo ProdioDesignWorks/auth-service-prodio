@@ -1,0 +1,41 @@
+{
+    "name": "authenticateRequest",
+    "plural": "authenticateRequest",
+    "base": "PersistedModel",
+    "idInjection": true,
+    "options": {
+      "validateUpsert": true
+    },
+    "properties": {
+      "id": {
+        "type": "string",
+        "id": true,
+        "defaultFn": "uuidv4"
+      },
+     
+      "email": {
+        "type": "string"
+      },
+      "phone": {
+        "type": "string"
+      },
+      "otp": {
+        "type": "string"
+      },
+      "token": {
+        "type": "string"
+      },
+      "createdAt": {
+        "type": "date",
+        "defaultFn": "now"
+      },
+      "updatedAt": {
+        "type": "date"
+      }
+    },
+    "validations": [],
+    "relations": {},
+    "acls": [],
+    "methods": {}
+  }
+  
