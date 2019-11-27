@@ -1193,11 +1193,11 @@ module.exports = function (Authaccounts) {
     } else if (authType === mobileEmailAuthType) {
 
       const {
-        phone = '', password = '', token = ''
+        phone = '', password = '', verificationToken = ''
       } = JSON.parse(JSON.stringify(data));
 
       if (!isNullValue(encryptionKey)) {
-        if (isNullValue(token)) {
+        if (isNullValue(verificationToken)) {
           return cb(new HttpErrors.BadRequest('Reset token is mandatory.', {
             expose: false
           }))
@@ -1218,7 +1218,7 @@ module.exports = function (Authaccounts) {
             expose: false
           }))
         } else {
-          const decryptedToken = verifyJwtToken(token);
+          const decryptedToken = verifyJwtToken(verificationToken);
           if (decryptedToken) {
             const newPassword = password.trim();
             const findAccount = {
@@ -1248,7 +1248,7 @@ module.exports = function (Authaccounts) {
                 }
                 const reqData = {
                   phone: phone,
-                  token: token,
+                  token: verificationToken,
                   createdAt: new Date()
                 }
                 Authaccounts.app.models.resetPasswordRequest.create(reqData, (resErr, resData) => {
