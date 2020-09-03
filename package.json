@@ -18,7 +18,7 @@
     "googleapis": "^37.1.0",
     "helmet": "^3.10.0",
     "http-errors": "^1.7.1",
-    "loopback": "^3.0.0",
+    "loopback": "^3.25.1",
     "loopback-boot": "^2.6.5",
     "loopback-component-explorer": "^5.0.0",
     "loopback-connector-mongodb": "^1.18.1",
